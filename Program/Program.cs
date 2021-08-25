@@ -11,9 +11,9 @@ namespace WinGL
         [STAThread]
         static void Main()
         {
-            var mainWindow = new MainWindow(600, 400, "Five USSR's");
+            var mainWindow = new MainWindow(600, 400, "OpenGL test");
+            Project.mainPanel = mainWindow;
             mainWindow.VSync = VSyncMode.Adaptive;
-            new OTKProject(mainWindow).CreateMainPanel(null);
             try
             {
                 mainWindow.Run();

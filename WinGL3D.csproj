@@ -69,6 +69,7 @@
     <Compile Include="Engine\Mathf\Matrix2x2.cs" />
     <Compile Include="Engine\Mathf\Matrix3x3.cs" />
     <Compile Include="Engine\Mathf\Matrix4x4.cs" />
+    <Compile Include="Engine\Mathf\Quaternion.cs" />
     <Compile Include="Engine\Mathf\Rect.cs" />
     <Compile Include="Engine\Mathf\Vector2.cs" />
     <Compile Include="Engine\Mathf\Vector3.cs" />
@@ -78,7 +79,9 @@
     <Compile Include="Engine\Tools\ReadOnlyArrayList.cs" />
     <Compile Include="Engine\Tools\SafeDictionary.cs" />
     <Compile Include="OpenGL\MainWindow.cs" />
+    <Compile Include="Program\Debug.cs" />
     <Compile Include="Program\Program.cs" />
+    <Compile Include="Program\Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

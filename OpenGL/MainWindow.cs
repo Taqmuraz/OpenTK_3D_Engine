@@ -13,11 +13,6 @@ namespace WinGL
 
 	class MainWindow : GameWindow, IMainPanel
     {
-		public override void Dispose()
-		{
-			base.Dispose();
-            TextureDrawer.Dispose();
-		}
         private Matrix4 ortho;
         public MainWindow(int width, int height, string title)
         {

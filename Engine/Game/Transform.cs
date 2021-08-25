@@ -4,7 +4,8 @@ namespace Engine.Game
 {
 	public sealed class Transform : Component
 	{
-		public Vector3 localPosition {
+		public Vector3 localPosition 
+		{
 			get
 			{
 				return new Vector3(local.column_3.x, local.column_3.y, local.column_3.z);
@@ -117,11 +118,6 @@ namespace Engine.Game
 		Matrix4x4 parentMatrixInv = Matrix4x4.identity;
 
 		HashSet<Transform> childs = new HashSet<Transform>();
-
-		void UpdateMatrix()
-		{
-			UpdateMatrix(UpdateState.All);
-		}
 
 		void UpdateMatrix(UpdateState state)
 		{

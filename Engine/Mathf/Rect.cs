@@ -85,31 +85,6 @@ namespace Engine
 			return FromCenterAndSize(center, (Vector2)matrix.MultiplyVector(size).Abs());
 		}
 
-		static Vector2[] nonAllocVertices = new Vector2[4];
-		public bool IntersectsRay(Ray ray, out float distance)
-		{
-			distance = (center - ray.origin).length;
-
-			Matrix4x4 rayMatrix = Matrix4x4.CreateWorldMatrix(ray.direction, new Vector2(-ray.direction.y, ray.direction.x), Vector3.forward, ray.origin).GetInversed();
-			bool negative = false, positive = false;
-			lock (nonAllocVertices)
-			{
-				nonAllocVertices[0] = min;
-				nonAllocVertices[1] = max;
-				nonAllocVertices[2] = upperLeft;
-				nonAllocVertices[3] = downRight;
-
-				for (int i = 0; i < 4; i++)
-				{
-					Vector2 v = rayMatrix.MultiplyPoint(nonAllocVertices[i]);
-					if (v.x < 0) return false;
-					if (v.y < 0) negative = true;
-					else positive = true;
-				}
-			}
-			return negative && positive;
-		}
-
 		public Matrix4x4 ToMatrixUV()
 		{
 			return Matrix4x4.CreateWorldMatrix(new Vector3(max.x - min.x, 0f, 0f), new Vector3(0f, max.y - min.y, 0f), Vector3.forward, min);

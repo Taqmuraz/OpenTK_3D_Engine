@@ -95,7 +95,7 @@ namespace Engine
 
 		public static void StartInput()
 		{
-			Project.instance.mainPanel.AddInputHandler(instance = new Input());
+			Project.mainPanel.AddInputHandler(instance = new Input());
 		}
 
 		public void OnKeyDown(Keys key)

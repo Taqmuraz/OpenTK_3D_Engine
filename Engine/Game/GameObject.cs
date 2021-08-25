@@ -77,7 +77,7 @@ namespace Engine.Game
 				}
 				catch (System.Exception ex)
 				{
-					Project.instance.mainPanel.Log(ex.ToString());
+					Debug.LogError(ex.ToString());
 				}
 			}
 		}

@@ -38,7 +38,7 @@ namespace Engine.Game
 				}
 				catch (System.Exception ex)
 				{
-					Project.instance.mainPanel.Log(ex.ToString());
+					Debug.LogError(ex.ToString());
 				}
 				handlersToRemove.Add(this);
 				destroyed = true;
@@ -77,7 +77,8 @@ namespace Engine.Game
 					}
 					catch (System.Exception ex)
 					{
-						Project.instance.mainPanel.Log(ex.ToString());
+						Debug.LogError(ex);
+						//Project.instance.mainPanel.Log(ex.ToString());
 					}
 				}
 			}
@@ -87,7 +88,7 @@ namespace Engine.Game
 
 		static void ThreadStart()
 		{
-			GameScenes.gameScenes[1].LoadScene();
+			//GameScenes.gameScenes[1].LoadScene();
 			//GameScenes.LoadScene(1);
 
 			while (isPlaying)
@@ -100,7 +101,7 @@ namespace Engine.Game
 
 						SendHandlersMessage("EarlyUpdate");
 
-						Collider.UpdatePhysics();
+						//Collider.UpdatePhysics();
 
 						SendHandlersMessage("Update");
 
@@ -109,14 +110,15 @@ namespace Engine.Game
 						Input.UpdateInput();
 
 						SendHandlersMessage("OnPreRender");
-						Project.instance.mainPanel.DrawCall();
+						//Project.instance.mainPanel.DrawCall();
 						SendHandlersMessage("OnPostRender");
 
 						//Project.Log(Time.deltaTime.ToString("F3"));
 					}
 					catch (System.Exception ex)
 					{
-						new ErrorForm(ex).ShowDialog();
+						Debug.LogError(ex);
+						//new ErrorForm(ex).ShowDialog();
 						break;
 					}
 				}
