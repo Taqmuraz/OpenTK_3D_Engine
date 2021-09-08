@@ -1,16 +1,25 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
-public sealed class ReadOnlyArrayList<T> : IEnumerable<T>
+public sealed class SafeList<T> : IEnumerable<T>
 {
 	List<T> list;
 
 	public int Count => list == null ? 0 : list.Count;
 
-	private ReadOnlyArrayList(List<T> list)
+	private SafeList(List<T> list)
 	{
 		this.list = list;
+	}
+
+	public void Add(T element)
+	{
+		if (list == null) list = new List<T>();
+		list.Add(element);
+	}
+	public void Remove(T element)
+	{
+		if (list != null) list.Remove(element);
 	}
 
 	public T this[int index]
@@ -37,9 +46,9 @@ public sealed class ReadOnlyArrayList<T> : IEnumerable<T>
 		return list == null ? EmptyEnumerator() : ((IEnumerable)list).GetEnumerator();
 	}
 
-	public static implicit operator ReadOnlyArrayList<T>(List<T> list)
+	public static implicit operator SafeList<T>(List<T> list)
 	{
-		return new ReadOnlyArrayList<T>(list);
+		return new SafeList<T>(list);
 	}
 
 	public int IndexOf(T element)

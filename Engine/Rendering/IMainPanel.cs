@@ -1,4 +1,5 @@
 ﻿using System;
+using Engine.Game;
 
 namespace Engine.Rendering
 {
@@ -6,5 +7,9 @@ namespace Engine.Rendering
 	{
 		void AddInputHandler(IInputHandler handler);
 		void RemoveInputHandler(IInputHandler handler);
+		Texture LoadTexture (string fileName);
+		Model LoadModel(string fileName);
+		void RegisterRenderer(Renderer renderer);
+		void UnregisterRenderer(Renderer renderer);
 	}
 }

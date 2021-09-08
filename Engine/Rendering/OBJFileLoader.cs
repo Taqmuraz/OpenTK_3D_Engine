@@ -36,7 +36,7 @@ namespace Engine.Rendering
 
         private static Dictionary<string, Mesh> loadedModels = new Dictionary<string, Mesh>();
 
-        public static Mesh loadOBJ(string objFileName)
+        public static Mesh LoadOBJ(string objFileName)
         {
             if (string.IsNullOrEmpty(objFileName)) throw new System.ArgumentNullException("objFileName");
 

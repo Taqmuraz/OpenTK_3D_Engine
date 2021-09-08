@@ -10,7 +10,7 @@ namespace WinGL
     {
 		private static List<int> vaos = new List<int>();
 		private static List<int> vbos = new List<int>();
-		private static Dictionary<string, int> textures = new Dictionary<string, int>();
+		private static Dictionary<string, Engine.Rendering.Texture> textures = new Dictionary<string, Engine.Rendering.Texture>();
 
 		public static RawModel LoadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices)
 		{
@@ -25,11 +25,17 @@ namespace WinGL
 			return new RawModel(vaoID, indices.Length);
 		}
 
-		public static int LoadTexture(string fileName)
+		public static Engine.Rendering.Texture LoadTexture(string fileName)
 		{
+			Engine.Rendering.Texture texture;
+
 			if (string.IsNullOrEmpty(fileName)) throw new System.ArgumentNullException("fileName");
 
-			if (textures.ContainsKey(fileName)) return textures[fileName];
+			if (textures.ContainsKey(fileName))
+			{
+				texture = textures[fileName];
+				return texture;
+			}
 
 			Bitmap bmp = new Bitmap(1, 1);
 			if (File.Exists(fileName))
@@ -43,8 +49,8 @@ namespace WinGL
 			BitmapData data = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int id = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D, id);
-
-			textures.Add(fileName, id);
+			texture = new Engine.Rendering.Texture(width, height, id);
+			textures.Add(fileName, texture);
 
 			int linear = (int)TextureMinFilter.Linear;
 			int repeat = (int)TextureWrapMode.Repeat;
@@ -56,7 +62,7 @@ namespace WinGL
 			GL.BindTexture(TextureTarget.Texture2D, 0);
 			bmp.UnlockBits(data);
 
-			return id;
+			return texture;
 		}
 
 		public static void CleanUp()
@@ -71,7 +77,7 @@ namespace WinGL
 			}
 			foreach (var texture in textures)
 			{
-				GL.DeleteTexture(texture.Value);
+				GL.DeleteTexture(texture.Value.textureIndex);
 			}
 		}
 

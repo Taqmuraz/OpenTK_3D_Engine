@@ -13,14 +13,16 @@ namespace WinGL
 
 	class MainWindow : GameWindow, IMainPanel
     {
-        private Matrix4 ortho;
+        public static float WindowWidth { get; private set; }
+        public static float WindowHeight { get; private set; }
+
         public MainWindow(int width, int height, string title)
         {
-            Width = width;
-            Height = height;
+            WindowWidth = Width = width;
+            WindowHeight = Height = height;
             WindowState = WindowState.Maximized;
             Title = title;
-            GL.Enable(EnableCap.PointSmooth);
+            /*GL.Enable(EnableCap.PointSmooth);
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Enable(EnableCap.Multisample);
@@ -33,24 +35,17 @@ namespace WinGL
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.FrontFace(FrontFaceDirection.Cw);
             GL.CullFace(CullFaceMode.Front);
+            */
         }
 
         protected override void OnResize(EventArgs e)
         {
-            base.OnResize(e);
-            GL.Viewport(0, 0, Width, Height);
-            ortho = Matrix4.CreateOrthographicOffCenter(0, Width, Height, 0, -100, 100);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref ortho);
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadIdentity();
+            WindowWidth = Width;
+            WindowHeight = Height;
         }
 
         void DrawFrame()
 		{
-            GL.Clear(ClearBufferMask.DepthBufferBit | ClearBufferMask.ColorBufferBit);
-            GL.ClearColor(Color4.Gray);
-            GL.LoadIdentity();
 
             // draw
 

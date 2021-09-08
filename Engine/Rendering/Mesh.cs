@@ -2,11 +2,11 @@
 {
 	public class Mesh
 	{
-		private float[] vertices;
-		private float[] textureCoords;
-		private float[] normals;
-		private int[] indices;
-		private float furthestPoint;
+		public float[] vertices { get; set; }
+		public float[] textureCoords { get; set; }
+		public float[] normals { get; set; }
+		public int[] indices { get; set; }
+		public float furthestPoint { get; set; }
 
 		public Mesh(float[] vertices, float[] textureCoords, float[] normals, int[] indices,
 				float furthestPoint)
