@@ -11,16 +11,30 @@ namespace WinGL
         [STAThread]
         static void Main()
         {
-            var mainWindow = new MainWindow(600, 400, "OpenGL test");
-            Project.mainPanel = mainWindow;
-            mainWindow.VSync = VSyncMode.Adaptive;
+            Debug.DebugStart();
+
             try
             {
-                mainWindow.Run();
+                var mainWindow = new MainWindow(600, 400, "OpenGL test");
+                Project.mainPanel = mainWindow;
+                mainWindow.VSync = VSyncMode.Adaptive;
+                try
+                {
+                    Engine.Game.GameThread.Start();
+                    mainWindow.Run();
+                }
+                finally
+                {
+                    Engine.Game.GameThread.isPlaying = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
             }
             finally
             {
-                Engine.Game.GameThread.isPlaying = false;
+                Debug.DebugEnd();
             }
         }
     }

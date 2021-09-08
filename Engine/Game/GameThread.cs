@@ -90,6 +90,7 @@ namespace Engine.Game
 		{
 			//GameScenes.gameScenes[1].LoadScene();
 			//GameScenes.LoadScene(1);
+			var camera = new GameObject("Camera").AddComponent<Camera>();
 
 			while (isPlaying)
 			{

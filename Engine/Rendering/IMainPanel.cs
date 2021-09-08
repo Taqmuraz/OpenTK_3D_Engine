@@ -11,5 +11,7 @@ namespace Engine.Rendering
 		Model LoadModel(string fileName);
 		void RegisterRenderer(Renderer renderer);
 		void UnregisterRenderer(Renderer renderer);
+		int screenWidth { get; }
+		int screenHeight { get; }
 	}
 }

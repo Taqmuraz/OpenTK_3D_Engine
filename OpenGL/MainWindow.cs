@@ -22,7 +22,7 @@ namespace WinGL
             WindowHeight = Height = height;
             WindowState = WindowState.Maximized;
             Title = title;
-            /*GL.Enable(EnableCap.PointSmooth);
+			/*GL.Enable(EnableCap.PointSmooth);
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Enable(EnableCap.Multisample);
@@ -36,6 +36,15 @@ namespace WinGL
             GL.FrontFace(FrontFaceDirection.Cw);
             GL.CullFace(CullFaceMode.Front);
             */
+
+			try
+			{
+                MasterRenderer.CreateMasterRenderer();
+            }
+			catch (Exception ex)
+			{
+                Debug.LogError(ex.ToString());
+			}
         }
 
         protected override void OnResize(EventArgs e)
@@ -46,8 +55,9 @@ namespace WinGL
 
         void DrawFrame()
 		{
-
             // draw
+
+            MasterRenderer.masterRenderer.Render(null, Engine.Game.Camera.mainCamera);
 
             SwapBuffers();
         }
@@ -122,5 +132,28 @@ namespace WinGL
 		{
             inputHandlers.Remove(handler);
         }
+
+		public Texture LoadTexture(string fileName)
+		{
+            return Loader.LoadTexture(fileName);
+		}
+
+		public Model LoadModel(string fileName)
+		{
+            return MasterRenderer.LoadModel(fileName);
+		}
+
+		public void RegisterRenderer(Engine.Game.Renderer renderer)
+		{
+            MasterRenderer.renderers.Add(renderer);
+		}
+
+		public void UnregisterRenderer(Engine.Game.Renderer renderer)
+		{
+            MasterRenderer.renderers.Remove(renderer);
+		}
+
+        public int screenWidth => Width;
+        public int screenHeight => Height;
 	}
 }

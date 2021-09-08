@@ -7,14 +7,11 @@ namespace WinGL
 	public class Renderer
 	{
 		public const int ATTRIBUTES_COUNT = 3;
-		public StaticShader shader { get; private set; }
+		public Shader shader { get; private set; }
 
-		public Renderer(StaticShader shader, Matrix4x4 projectionMatrix)
+		public Renderer(Shader shader)
 		{
 			this.shader = shader;
-			shader.start();
-			shader.loadProjectionMatrix(projectionMatrix);
-			shader.stop();
 		}
 
 		public void render(SafeList<Engine.Game.Renderer> renderers)
@@ -44,7 +41,7 @@ namespace WinGL
 
 			MasterRenderer.SetCulling(renderer.material.cullFaces);
 
-			shader.loadTextureParams(texture);
+			shader.LoadTextureParams(renderer.material);
 
 			GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2D, renderer.material.mainTexture.textureIndex);
@@ -62,7 +59,7 @@ namespace WinGL
 		protected void PrepareInstance(Engine.Game.Renderer renderer)
 		{
 			Matrix4x4 transformationMatrix = renderer.transform.localToWorld;
-			shader.loadTransformationMatrix(transformationMatrix);
+			shader.LoadTransformationMatrix(transformationMatrix);
 		}
 	}
 }

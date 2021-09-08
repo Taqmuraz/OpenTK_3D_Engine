@@ -1,4 +1,6 @@
-﻿namespace Engine
+﻿using System;
+
+namespace Engine
 {
 	public struct Color32
 	{
@@ -30,6 +32,12 @@
 		public static readonly Color32 green = new Color32 (0, 255, 0, 255);
 		public static readonly Color32 blue = new Color32 (0, 0, 255, 255);
 		public static readonly Color32 white = new Color32 (255, 255, 255, 255);
+
+		public Vector4 ToVector4()
+		{
+			return new Vector4(r, g, b, a);
+		}
+
 		public static readonly Color32 black = new Color32 (0, 0, 0, 255);
 
 		public static Color32 operator * (Color32 a, float b)

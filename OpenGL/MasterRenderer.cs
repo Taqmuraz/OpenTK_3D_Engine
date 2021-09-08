@@ -6,16 +6,7 @@ namespace WinGL
 {
 	public class MasterRenderer
 	{
-		private static MasterRenderer masterRenderer;// = new MasterRenderer ();
-
-		public static MasterRenderer getMasterRenderer()
-		{
-			return masterRenderer;
-		}
-
-		private const float FOV = 70f;
-		private const float NEAR_PLANE = 0.01f;
-		private const float FAR_PLANE = 1000f;
+		public static MasterRenderer masterRenderer { get; private set; }// = new MasterRenderer ();
 
 		public static SafeList<Engine.Game.Renderer> renderers { get; private set; } = new List<Engine.Game.Renderer>();
 		public static SafeList<RawModel> models { get; private set; } = new List<RawModel>();
@@ -36,33 +27,31 @@ namespace WinGL
 			return new Engine.Rendering.Model(models.Count - 1);
 		}
 
-		private static Color32 clearColor { get; set; } = new Color32(0.7f, 0.7f, 1.0f, 1.0f);
-
-		private Matrix4x4 projectionMatrix;
-
 		Renderer renderer;
 
 		public MasterRenderer()
 		{
 			GL.Enable(EnableCap.DepthTest);
-			CreateProjectionMatrix();
+			//CreateProjectionMatrix();
 
-			var shader = new StaticShader();
+			var shader = new Shader(Shader.ShadersPath + "vertexShader.glsl", Shader.ShadersPath + "fragmentShader.glsl");
 
-			renderer = new Renderer(shader, projectionMatrix);
+			renderer = new Renderer(shader);
 		}
 
-		public void Render(Light sun, Camera camera)
+		public void Render(Engine.Game.Light sun, Engine.Game.Camera camera)
 		{
-			Prepare();
+			if (camera == null) return;
 
-			renderer.shader.start();
-			renderer.shader.loadLight(sun);
-			renderer.shader.loadProjectionMatrix(projectionMatrix);
-			renderer.shader.loadViewMatrix(camera);
+			Prepare(camera);
+
+			renderer.shader.Start();
+			if (sun != null) renderer.shader.LoadLight(sun);
+			renderer.shader.LoadProjectionMatrix(Engine.Game.Camera.mainCamera.projectionMatrix);
+			renderer.shader.LoadViewMatrix(Engine.Game.Camera.mainCamera.transform.localToWorld);
 
 			renderer.render(renderers);
-			renderer.shader.stop();
+			renderer.shader.Stop();
 		}
 
 		public static void SetCulling(bool enable)
@@ -83,15 +72,16 @@ namespace WinGL
 			renderer.shader.cleanUp();
 		}
 
-		public void Prepare()
+		public void Prepare(Engine.Game.Camera camera)
 		{
+			var clearColor = camera.clearColor;
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			GL.ClearColor(clearColor.r, clearColor.g, clearColor.b, 1f);
 		}
 
 		private void CreateProjectionMatrix()
 		{
-			float aspectRatio = MainWindow.WindowWidth / MainWindow.WindowHeight;
+			/*float aspectRatio = MainWindow.WindowWidth / MainWindow.WindowHeight;
 			float y_scale = 1f / Mathf.Tan(FOV * 0.5f);
 			float x_scale = y_scale / aspectRatio;
 			float frustum_length = FAR_PLANE - NEAR_PLANE;
@@ -107,6 +97,7 @@ namespace WinGL
 			projectionMatrix.column_3.w = 0f;
 
 			//projectionMatrix.rotate(180f, new Vector3f(0f, 1f, 0f));
+			*/
 		}
 
 		public static void CreateMasterRenderer()

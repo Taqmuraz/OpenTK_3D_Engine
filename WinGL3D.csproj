@@ -58,6 +58,9 @@
     <Compile Include="Engine\Game\GameThread.cs" />
     <Compile Include="Engine\Game\IInitializable.cs" />
     <Compile Include="Engine\Game\Random.cs" />
+    <Compile Include="Engine\Game\Renderer\Camera.cs" />
+    <Compile Include="Engine\Game\Renderer\Light.cs" />
+    <Compile Include="Engine\Game\Renderer\Material.cs" />
     <Compile Include="Engine\Game\Renderer\Renderer.cs" />
     <Compile Include="Engine\Game\Renderer\Shader.cs" />
     <Compile Include="Engine\Game\Time.cs" />
