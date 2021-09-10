@@ -1,42 +1,9 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using Engine;
+using System;
 
 namespace WinGL
 {
-	public sealed class Shader : ShaderProgram
-	{
-		public static readonly string ShadersPath = "./Data/Shaders/";
-
-		public Shader(string vertexFile, string fragmentFile) : base(vertexFile, fragmentFile)
-		{
-		}
-
-		public void LoadTransformationMatrix(Matrix4x4 matrix)
-		{
-			SetMatrix("transformationMatrix", matrix);
-		}
-		public void LoadProjectionMatrix(Matrix4x4 projection)
-		{
-			SetMatrix("projectionMatrix", projection);
-		}
-		public void LoadViewMatrix(Matrix4x4 matrix)
-		{
-			matrix.column_3 = -matrix.column_3;
-			SetMatrix("viewMatrix", matrix);
-		}
-		public void LoadLight(Engine.Game.Light light)
-		{
-			SetFloat("ambienceIntencivity", light.lightBrightness);
-			SetVector3("lightPosition", light.transform.position);
-			SetVector4("lightColor", light.lightColor.ToVector4());
-		}
-		public void LoadTextureParams(Engine.Game.Material material)
-		{
-			Vector2 tiling = material.tiling;
-			Vector2 offset = material.offset;
-			SetVector4("textureVector", new Vector4(tiling.x, tiling.y, offset.x, offset.y));
-		}
-	}
 
 	public abstract class ShaderProgram
 	{
@@ -58,6 +25,7 @@ namespace WinGL
 			BindAttributes();
 			GL.LinkProgram(programID);
 			GL.ValidateProgram(programID);
+			Debug.Log(GetUniformLocation("viewMatrix"));
 
 			//System.out.println(fragmentFile());
 		}
@@ -70,7 +38,7 @@ namespace WinGL
 		{
 			GL.UseProgram(0);
 		}
-		public void cleanUp()
+		public void CleanUp()
 		{
 			Stop();
 			GL.DetachShader(programID, vertexShaderID);
@@ -88,8 +56,10 @@ namespace WinGL
 			else if (uniforms.ContainsKey(uniformName)) return uniforms[uniformName];
 			else
 			{
+				Debug.Log($"Active uniform : {GL.GetActiveUniformName(programID, 0)}");
 				int location = GL.GetUniformLocation(programID, uniformName);
 				uniforms.Add(uniformName, location);
+				Debug.Log($"{uniformName} location : {location}, program : {programID}");
 				return location;
 			}
 		}
@@ -133,8 +103,13 @@ namespace WinGL
 
 		protected void LoadMatrix(int location, Matrix4x4 matrix)
 		{
-			for (int i = 0; i < MATRIX_SIZE; i++) matrixBuffer[i] = matrix[i / 4, i % 4];
-			GL.UniformMatrix4(location, 1, false, matrixBuffer);
+			var m = new OpenTK.Matrix4(
+				matrix.column_0.x, matrix.column_1.x, matrix.column_2.x, matrix.column_3.x,
+				matrix.column_0.y, matrix.column_1.y, matrix.column_2.y, matrix.column_3.y,
+				matrix.column_0.z, matrix.column_1.z, matrix.column_2.z, matrix.column_3.z,
+				matrix.column_0.w, matrix.column_1.w, matrix.column_2.w, matrix.column_3.w
+				);
+			GL.UniformMatrix4(location, false, ref m);
 		}
 
 		public void SetFloat(string name, float value)
@@ -166,24 +141,27 @@ namespace WinGL
 		{
 			System.Text.StringBuilder shaderSource = new System.Text.StringBuilder();
 
-			using (System.IO.StreamReader reader = new System.IO.StreamReader(file))
+			using (System.IO.StreamReader reader = new System.IO.StreamReader(file, true))
 			{
 				string line;
-				while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+				while (!reader.EndOfStream)
 				{
+					line = reader.ReadLine();
 					shaderSource.Append(line).Append("//\n");
 				}
 			}
 
 			int shaderID = GL.CreateShader(type);
 			GL.ShaderSource(shaderID, shaderSource.ToString());
+			//Debug.Log(shaderSource);
 			GL.CompileShader(shaderID);
 			GL.GetShader(shaderID, ShaderParameter.CompileStatus, out int p);
-			if (p != 0)
+			if (p == 0)
 			{
 				GL.GetShaderInfoLog(shaderID, 500, out int l, out string info);
 				throw new System.Exception($"Shader compile error : {info}, message length = {l}, file = {file}");
 			}
+
 			return shaderID;
 		}
 	}

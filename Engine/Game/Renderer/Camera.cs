@@ -14,7 +14,7 @@
 		{
 			get
 			{
-				return Matrix4x4.CreateFrustumMatrix(60f, (float)Project.mainPanel.screenWidth / (float)Project.mainPanel.screenHeight, nearPlane, farPlane);
+				return Matrix4x4.CreateFrustumMatrix(fieldOfView, (float)Project.mainPanel.screenWidth / (float)Project.mainPanel.screenHeight, nearPlane, farPlane);
 			}
 		}
 

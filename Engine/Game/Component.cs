@@ -1,5 +1,6 @@
 ﻿namespace Engine.Game
 {
+
 	public class Component : BehaviourEventsHandler, IInitializable<GameObject>
 	{
 		bool destroyed;

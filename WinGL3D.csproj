@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Engine\Game\BehaviourEventAttribute.cs" />
     <Compile Include="Engine\Game\BehaviourEventsHandler.cs" />
+    <Compile Include="Engine\Game\Samples\CameraFreeController.cs" />
     <Compile Include="Engine\Game\Component.cs" />
     <Compile Include="Engine\Game\GameObject.cs" />
     <Compile Include="Engine\Game\GameObjectInstancer.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="OpenGL\MainWindow.cs" />
     <Compile Include="OpenGL\MasterRenderer.cs" />
     <Compile Include="OpenGL\RawModel.cs" />
+    <Compile Include="OpenGL\Shader.cs" />
     <Compile Include="OpenGL\ShaderProgram.cs" />
     <Compile Include="Program\Debug.cs" />
     <Compile Include="Program\Program.cs" />

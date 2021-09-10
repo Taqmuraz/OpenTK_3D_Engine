@@ -7,6 +7,7 @@ using OpenTK.Graphics;
 using OpenTK.Input;
 using Engine;
 using Engine.Rendering;
+using System.Linq;
 
 namespace WinGL
 {
@@ -22,7 +23,8 @@ namespace WinGL
             WindowHeight = Height = height;
             WindowState = WindowState.Maximized;
             Title = title;
-			/*GL.Enable(EnableCap.PointSmooth);
+			/*
+            GL.Enable(EnableCap.PointSmooth);
             GL.Enable(EnableCap.LineSmooth);
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Enable(EnableCap.Multisample);
@@ -45,6 +47,8 @@ namespace WinGL
 			{
                 Debug.LogError(ex.ToString());
 			}
+
+            sample = Engine.Rendering.OBJFileLoader.LoadOBJ("./Data/Models/Soldier.obj");
         }
 
         protected override void OnResize(EventArgs e)
@@ -53,11 +57,36 @@ namespace WinGL
             WindowHeight = Height;
         }
 
+        Mesh sample;
+
         void DrawFrame()
 		{
-            // draw
+            var camera = Engine.Game.Camera.mainCamera;
+            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}";
+
+            Loader.UpdateLoader();
+
+            GL.Viewport(0, 0, Width, Height);
 
             MasterRenderer.masterRenderer.Render(null, Engine.Game.Camera.mainCamera);
+
+            GL.Begin(PrimitiveType.LineStrip);
+            
+            float s = 0.1f;
+
+            var m = camera.transform.localToWorld * camera.projectionMatrix;
+
+            foreach (var index in sample.indices)
+            {
+                Engine.Vector3 vert = new Engine.Vector3(sample.vertices[index] * s, sample.vertices[index + 1] * s, sample.vertices[index + 2] * s);
+
+                vert = m.MultiplyPoint(vert);
+                
+                GL.Color4(sample.textureCoords[index], sample.textureCoords[index + 1], 0f, 1f);
+                GL.Vertex3(vert.x, vert.y, vert.z);
+            }
+
+            GL.End();
 
             SwapBuffers();
         }
@@ -132,6 +161,8 @@ namespace WinGL
 		{
             inputHandlers.Remove(handler);
         }
+
+        List<string> texturesToLoad = new List<string>();
 
 		public Texture LoadTexture(string fileName)
 		{

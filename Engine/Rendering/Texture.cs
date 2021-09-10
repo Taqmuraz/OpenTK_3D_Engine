@@ -9,8 +9,8 @@
 			this.textureIndex = textureIndex;
 		}
 
-		public int width { get; private set; }
-		public int height { get; private set; }
-		public int textureIndex { get; private set; }
+		public int width { get; set; }
+		public int height { get; set; }
+		public int textureIndex { get; set; }
 	}
 }

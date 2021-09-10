@@ -7,20 +7,36 @@ namespace WinGL
 	public class Renderer
 	{
 		public const int ATTRIBUTES_COUNT = 3;
-		public Shader shader { get; private set; }
 
-		public Renderer(Shader shader)
+		Shader shader;
+
+		public Renderer()
 		{
-			this.shader = shader;
 		}
 
-		public void render(SafeList<Engine.Game.Renderer> renderers)
+		public void Render(SafeList<Engine.Game.Renderer> renderers, Engine.Game.Light sun)
 		{
+			Matrix4x4 proj = Matrix4x4.identity;// Engine.Game.Camera.mainCamera.projectionMatrix;
+			Matrix4x4 view = Engine.Game.Camera.mainCamera.transform.localToWorld;
+
 			foreach (Engine.Game.Renderer renderer in renderers)
 			{
+				if (MasterRenderer.models.Count <= renderer.model.modelIndex) continue;
+
+				if (renderer.material == null) shader = Shader.GetShader("default");
+				else shader = Shader.GetShader(renderer.material.shader.shaderName);
+
+				shader.Start();
+				if (sun != null) shader.LoadLight(sun);
+				shader.LoadProjectionMatrix(proj);
+				shader.LoadViewMatrix(view);
+				shader.SetFloat("time", Engine.Game.Time.time);
+
 				PrepareTexturedModel(renderer);
 				PrepareInstance(renderer);
 				GL.DrawElements(BeginMode.Triangles, MasterRenderer.models[renderer.model.modelIndex].vertexCount, DrawElementsType.UnsignedInt, 0);
+
+				shader.Stop();
 			}
 			UnbindTexturedModel();
 		}
@@ -36,8 +52,6 @@ namespace WinGL
 			{
 				GL.EnableVertexAttribArray(i);
 			}
-
-			Engine.Rendering.Texture texture = renderer.material.mainTexture;
 
 			MasterRenderer.SetCulling(renderer.material.cullFaces);
 

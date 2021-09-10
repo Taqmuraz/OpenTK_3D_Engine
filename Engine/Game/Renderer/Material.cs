@@ -9,7 +9,7 @@ namespace Engine.Game
 			this.shader = shader;
 		}
 		public Shader shader { get; private set; }
-		public Texture mainTexture { get; private set; }
+		public Texture mainTexture { get; set; }
 		public bool cullFaces { get; private set; } = true;
 
 		public Vector2 tiling { get; set; } = Vector2.one;

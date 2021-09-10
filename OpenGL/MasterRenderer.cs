@@ -13,6 +13,8 @@ namespace WinGL
 
 		static Dictionary<string, int> modelIndices = new Dictionary<string, int>();
 
+		static List<string> modelsToLoad = new List<string>();
+
 		public static Engine.Rendering.Model LoadModel(string fileName)
 		{
 			if (string.IsNullOrEmpty(fileName)) throw new System.ArgumentException("fileName is null or empty");
@@ -21,37 +23,49 @@ namespace WinGL
 				return new Engine.Rendering.Model(modelIndices[fileName]);
 			}
 
-			var mesh = Engine.Rendering.OBJFileLoader.LoadOBJ(fileName);
-			models.Add(Loader.LoadToVAO(mesh.vertices, mesh.textureCoords, mesh.normals, mesh.indices));
-			modelIndices.Add(fileName, models.Count - 1);
-			return new Engine.Rendering.Model(models.Count - 1);
+			modelsToLoad.Add(fileName);
+			int index = models.Count + modelsToLoad.Count - 1;
+			modelIndices.Add(fileName, index);
+
+			return new Engine.Rendering.Model(index);
 		}
 
 		Renderer renderer;
+
+		void LoadModelFromQueue(string fileName)
+		{
+			var mesh = Engine.Rendering.OBJFileLoader.LoadOBJ(fileName);
+			models.Add(Loader.LoadModel(mesh));
+		}
 
 		public MasterRenderer()
 		{
 			GL.Enable(EnableCap.DepthTest);
 			//CreateProjectionMatrix();
 
-			var shader = new Shader(Shader.ShadersPath + "vertexShader.glsl", Shader.ShadersPath + "fragmentShader.glsl");
-
-			renderer = new Renderer(shader);
+			renderer = new Renderer();
 		}
 
 		public void Render(Engine.Game.Light sun, Engine.Game.Camera camera)
 		{
+			foreach (var model in modelsToLoad)
+			{
+				try
+				{
+					LoadModelFromQueue(model);
+				}
+				catch (System.Exception ex)
+				{
+					Debug.LogError(ex.ToString());
+				}
+			}
+			modelsToLoad.Clear();
+
 			if (camera == null) return;
 
 			Prepare(camera);
 
-			renderer.shader.Start();
-			if (sun != null) renderer.shader.LoadLight(sun);
-			renderer.shader.LoadProjectionMatrix(Engine.Game.Camera.mainCamera.projectionMatrix);
-			renderer.shader.LoadViewMatrix(Engine.Game.Camera.mainCamera.transform.localToWorld);
-
-			renderer.render(renderers);
-			renderer.shader.Stop();
+			renderer.Render(renderers, sun);
 		}
 
 		public static void SetCulling(bool enable)
@@ -69,7 +83,7 @@ namespace WinGL
 
 		public void CleanUp()
 		{
-			renderer.shader.cleanUp();
+			Shader.CleanShaders();
 		}
 
 		public void Prepare(Engine.Game.Camera camera)
@@ -103,6 +117,7 @@ namespace WinGL
 		public static void CreateMasterRenderer()
 		{
 			masterRenderer = new MasterRenderer();
+			//Shader.LoadShader("Diffuse", Shader.ShadersPath + "vertexShader.glsl", Shader.ShadersPath + "fragmentShader.glsl");
 		}
 	}
 }

@@ -32,9 +32,13 @@ namespace Engine.Rendering
             }
         }
 
-        private static readonly string MODELS_LOCATION = "./Data/Models/";
 
         private static Dictionary<string, Mesh> loadedModels = new Dictionary<string, Mesh>();
+
+        static float ParseFloat(string value)
+		{
+            return System.Convert.ToSingle(value, System.Globalization.CultureInfo.InvariantCulture);
+		}
 
         public static Mesh LoadOBJ(string objFileName)
         {
@@ -47,7 +51,7 @@ namespace Engine.Rendering
             List<Vector3> normals = new List<Vector3>();
             List<int> indices = new List<int>();
 
-            using (FileStream objFile = File.OpenRead(MODELS_LOCATION + objFileName + ".obj"))
+            using (FileStream objFile = File.OpenRead(objFileName))
             {
                 using (StreamReader reader = new StreamReader(objFile))
                 {
@@ -61,9 +65,9 @@ namespace Engine.Rendering
                             {
                                 string[] currentLine = line.Split(' ');
                                 Vector3 vertex = new Vector3(
-                                    System.Convert.ToSingle(currentLine[1]),
-                                    System.Convert.ToSingle(currentLine[2]),
-                                    System.Convert.ToSingle(currentLine[3]));
+                                    ParseFloat(currentLine[1]),
+                                    ParseFloat(currentLine[2]),
+                                    ParseFloat(currentLine[3]));
                                 Vertex newVertex = new Vertex(vertices.Count, vertex);
                                 vertices.Add(newVertex);
                             }
@@ -71,17 +75,17 @@ namespace Engine.Rendering
                             {
                                 string[] currentLine = line.Split(' ');
                                 Vector2 texture = new Vector2(
-                                    System.Convert.ToSingle(currentLine[1]),
-                                    System.Convert.ToSingle(currentLine[2]));
+                                    ParseFloat(currentLine[1]),
+                                    ParseFloat(currentLine[2]));
                                 textures.Add(texture);
                             }
                             else if (line.StartsWith("vn "))
                             {
                                 string[] currentLine = line.Split(' ');
                                 Vector3 normal = new Vector3(
-                                    System.Convert.ToSingle(currentLine[1]),
-                                    System.Convert.ToSingle(currentLine[2]),
-                                    System.Convert.ToSingle(currentLine[3]));
+                                    ParseFloat(currentLine[1]),
+                                    ParseFloat(currentLine[2]),
+                                    ParseFloat(currentLine[3]));
                                 normals.Add(normal);
                             }
                             else if (line.StartsWith("f "))
@@ -118,7 +122,7 @@ namespace Engine.Rendering
             float[] normalsArray = new float[vertices.Count * 3];
             float furthest = ConvertDataToArrays(vertices, textures, normals, verticesArray,
                     texturesArray, normalsArray);
-            int[] indicesArray = ConvertIndicesListToArray(indices);
+            int[] indicesArray = indices.ToArray();
             Mesh mesh = new Mesh(verticesArray, texturesArray, normalsArray, indicesArray,
                     furthest);
 
@@ -144,16 +148,6 @@ namespace Engine.Rendering
                 DealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices,
                         vertices);
             }
-        }
-
-        private static int[] ConvertIndicesListToArray(List<int> indices)
-        {
-            int[] indicesArray = new int[indices.Count];
-            for (int i = 0; i < indicesArray.Length; i++)
-            {
-                indicesArray[i] = indices[i];
-            }
-            return indicesArray;
         }
 
         private static float ConvertDataToArrays(List<Vertex> vertices, List<Vector2> textures,

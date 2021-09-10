@@ -86,7 +86,7 @@ namespace Engine.Game
 			Forward = 32,
 			All = 255,
 
-			PositionChanged = None,
+			PositionChanged = Position,
 			RotationChanged = Rotation | Right | Up | Forward,
 			ScaleChanged = Scale
 		}

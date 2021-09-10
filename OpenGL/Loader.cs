@@ -11,36 +11,103 @@ namespace WinGL
 		private static List<int> vaos = new List<int>();
 		private static List<int> vbos = new List<int>();
 		private static Dictionary<string, Engine.Rendering.Texture> textures = new Dictionary<string, Engine.Rendering.Texture>();
+		static Dictionary<Engine.Rendering.Mesh, RawModel> models = new Dictionary<Engine.Rendering.Mesh, RawModel>();
 
-		public static RawModel LoadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices)
+		static List<(Engine.Rendering.Mesh mesh, RawModel model)> modelsToLoad = new List<(Engine.Rendering.Mesh mesh, RawModel model)>();
+
+		static void LoadToVAO(Engine.Rendering.Mesh mesh, RawModel model)
 		{
-			int vaoID = CreateVAO();
-			BindIndicesBuffer(indices);
+			model.vaoID = CreateVAO();
+			BindIndicesBuffer(mesh.indices);
 
-			StoreDataInAttributeList(0, 3, positions);
-			StoreDataInAttributeList(1, 2, textureCoords);
-			StoreDataInAttributeList(2, 3, normals);
+			Debug.Log($"Vao : {model.vaoID}, vertices : {mesh.vertices.Length}, indices : {mesh.indices.Length}, normals : {mesh.normals.Length}, uvs : {mesh.textureCoords.Length}");
+
+			StoreDataInAttributeList(0, 3, mesh.vertices);
+			StoreDataInAttributeList(1, 2, mesh.textureCoords);
+			StoreDataInAttributeList(2, 3, mesh.normals);
 
 			UnbindVAO();
-			return new RawModel(vaoID, indices.Length);
 		}
+
+		public static RawModel LoadModel(Engine.Rendering.Mesh mesh)
+		{
+			if (mesh == null) throw new System.ArgumentNullException("mesh");
+			else if (models.ContainsKey(mesh)) return models[mesh];
+			else
+			{
+				var model = new RawModel(0, mesh.indices.Length);
+				modelsToLoad.Add((mesh, model));
+				models.Add(mesh, model);
+				return model;
+			}
+		}
+
+		struct TextureToLoad
+		{
+			public readonly string file;
+			public readonly Engine.Rendering.Texture texture;
+
+			public TextureToLoad(string file, Engine.Rendering.Texture texture)
+			{
+				this.file = file;
+				this.texture = texture;
+			}
+		}
+
+		static List<TextureToLoad> texturesToLoad = new List<TextureToLoad>();
 
 		public static Engine.Rendering.Texture LoadTexture(string fileName)
 		{
-			Engine.Rendering.Texture texture;
-
 			if (string.IsNullOrEmpty(fileName)) throw new System.ArgumentNullException("fileName");
 
 			if (textures.ContainsKey(fileName))
 			{
-				texture = textures[fileName];
+				return textures[fileName];
+			}
+			else
+			{
+				var texture = new Engine.Rendering.Texture(0, 1, 1);
+				textures.Add(fileName, texture);
+				texturesToLoad.Add(new TextureToLoad(fileName, texture));
 				return texture;
 			}
+		}
 
-			Bitmap bmp = new Bitmap(1, 1);
-			if (File.Exists(fileName))
+		public static void UpdateLoader()
+		{
+			foreach (var texture in texturesToLoad)
 			{
-				bmp = (Bitmap)Image.FromFile(fileName);
+				try
+				{
+					ProcessTexture(texture);
+				}
+				catch (System.Exception ex)
+				{
+					Debug.LogError(ex);
+				}
+			}
+			texturesToLoad.Clear();
+
+			foreach (var model in modelsToLoad)
+			{
+				try
+				{
+					LoadToVAO(model.mesh, model.model);
+				}
+				catch (System.Exception ex)
+				{
+					Debug.LogError(ex);
+				}
+			}
+			modelsToLoad.Clear();
+		}
+
+		static void ProcessTexture(TextureToLoad tex)
+		{
+			Bitmap bmp = new Bitmap(1, 1);
+			if (File.Exists(tex.file))
+			{
+				bmp = (Bitmap)Image.FromFile(tex.file);
 				bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 			}
 
@@ -49,8 +116,10 @@ namespace WinGL
 			BitmapData data = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int id = GL.GenTexture();
 			GL.BindTexture(TextureTarget.Texture2D, id);
-			texture = new Engine.Rendering.Texture(width, height, id);
-			textures.Add(fileName, texture);
+
+			tex.texture.textureIndex = id;
+			tex.texture.width = width;
+			tex.texture.height = height;
 
 			int linear = (int)TextureMinFilter.Linear;
 			int repeat = (int)TextureWrapMode.Repeat;
@@ -61,8 +130,6 @@ namespace WinGL
 			GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 			GL.BindTexture(TextureTarget.Texture2D, 0);
 			bmp.UnlockBits(data);
-
-			return texture;
 		}
 
 		public static void CleanUp()
