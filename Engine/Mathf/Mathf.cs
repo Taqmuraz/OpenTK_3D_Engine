@@ -9,6 +9,15 @@ namespace Engine
 		public const float Rad2Deg = 180f / PI;
 		public const float Epsilon = 1.401298E-45f;
 
+		public static float SinRad(this float a)
+		{
+			return (float)Math.Sin(a);
+		}
+		public static float CosRad(this float a)
+		{
+			return (float)Math.Cos(a);
+		}
+
 		public static float Sin (this float a)
 		{
 			return (float)Math.Sin (a * Deg2Rad);

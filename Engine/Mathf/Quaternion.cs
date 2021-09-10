@@ -49,5 +49,29 @@
 			w = -a.x * b.x - a.y * b.y - a.z * b.z + a.w * b.w;
 			return new Quaternion(x, y, z, w);
 		}
+
+		public static Quaternion Euler(float x, float y, float z)
+		{
+			float c1 = y.Cos();
+			float c2 = z.Cos();
+			float c3 = x.Cos();
+
+			float s1 = y.Sin();
+			float s2 = z.Sin();
+			float s3 = x.Sin();
+
+			Quaternion q = new Quaternion();
+			q.w = c1 * c2 * c3 - s1 * s2 * s3;
+			q.x = s1 * s2 * c3 + c1 * c2 * s3;
+			q.y = s1 * c2 * c3 + c1 * s2 * s3;
+			q.z = c1 * s2 * c3 - s1 * c2 * s3;
+
+			return q;
+		}
+
+		public override string ToString()
+		{
+			return $"({x}, {y}, {z}, {w})";
+		}
 	}
 }

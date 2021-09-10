@@ -3,6 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 
 namespace WinGL
 {
@@ -19,8 +20,6 @@ namespace WinGL
 		{
 			model.vaoID = CreateVAO();
 			BindIndicesBuffer(mesh.indices);
-
-			Debug.Log($"Vao : {model.vaoID}, vertices : {mesh.vertices.Length}, indices : {mesh.indices.Length}, normals : {mesh.normals.Length}, uvs : {mesh.textureCoords.Length}");
 
 			StoreDataInAttributeList(0, 3, mesh.vertices);
 			StoreDataInAttributeList(1, 2, mesh.textureCoords);

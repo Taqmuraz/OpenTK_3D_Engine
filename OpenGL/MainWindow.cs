@@ -62,27 +62,32 @@ namespace WinGL
         void DrawFrame()
 		{
             var camera = Engine.Game.Camera.mainCamera;
-            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}";
+            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}, Camera rotation : {camera.transform.rotation}";
 
             Loader.UpdateLoader();
+
+            GL.LoadIdentity();
 
             GL.Viewport(0, 0, Width, Height);
 
             MasterRenderer.masterRenderer.Render(null, Engine.Game.Camera.mainCamera);
 
-            GL.Begin(PrimitiveType.LineStrip);
+            GL.Begin(PrimitiveType.Triangles);
             
             float s = 0.1f;
 
             var m = camera.transform.localToWorld * camera.projectionMatrix;
 
-            foreach (var index in sample.indices)
+            foreach (var i in sample.indices)
             {
-                Engine.Vector3 vert = new Engine.Vector3(sample.vertices[index] * s, sample.vertices[index + 1] * s, sample.vertices[index + 2] * s);
+                int indexV = i * 3;
+                int indexT = i * 2;
 
-                vert = m.MultiplyPoint(vert);
+                Engine.Vector3 vert = new Engine.Vector3(sample.vertices[indexV] * s, sample.vertices[indexV + 1] * s, sample.vertices[indexV + 2] * s);
+
+                vert = m.MultiplyPoint_With_WDevision(vert);
                 
-                GL.Color4(sample.textureCoords[index], sample.textureCoords[index + 1], 0f, 1f);
+                GL.Color4(sample.textureCoords[indexT], sample.textureCoords[indexT + 1], 0f, 1f);
                 GL.Vertex3(vert.x, vert.y, vert.z);
             }
 
@@ -117,6 +122,11 @@ namespace WinGL
                     case Key.RShift:return KeyCode.ShiftKey;
                     case Key.LControl: return KeyCode.ControlKey;
                     case Key.RControl: return KeyCode.ControlKey;
+
+                    case Key.Left: return KeyCode.Left;
+                    case Key.Right: return KeyCode.Right;
+                    case Key.Down: return KeyCode.Down;
+                    case Key.Up: return KeyCode.Up;
                 }
             }
             return KeyCode.None;

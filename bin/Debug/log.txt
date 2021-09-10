@@ -1,12 +1,11 @@
 Active uniform : lightPosition
-viewMatrix location : 1, program : 3
-1
+viewMatrix location : -1, program : 3
+-1
 Active uniform : lightPosition
-projectionMatrix location : 2, program : 3
+projectionMatrix location : -1, program : 3
 Active uniform : lightPosition
 time location : -1, program : 3
 Active uniform : lightPosition
-textureVector location : 3, program : 3
+textureVector location : 1, program : 3
 Active uniform : lightPosition
 transformationMatrix location : 0, program : 3
-Vao : 1, vertices : 2112, indices : 3330, normals : 2112, uvs : 1408

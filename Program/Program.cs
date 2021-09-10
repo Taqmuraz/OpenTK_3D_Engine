@@ -1,8 +1,28 @@
 ﻿using System;
+using System.Windows.Forms;
+using System.Drawing;
 using OpenTK;
 
 namespace WinGL
 {
+    class TestForm : Form
+    {
+        public TestForm()
+		{
+
+		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+            Engine.Rendering.Mesh mesh = Engine.Rendering.OBJFileLoader.LoadOBJ("./Data/Models/Soldier.obj");
+			for (int i = 0; i < mesh.indices.Length; i++)
+			{
+                int index = mesh.indices[i];
+                //PointF p = new PointF(mesh.vertices[index], mesh.vertices[index]);
+			}
+		}
+	}
+
 	static class Program
     {
         /// <summary>
@@ -11,6 +31,8 @@ namespace WinGL
         [STAThread]
         static void Main()
         {
+            //Application.Run(new TestForm());
+            //return;
             Debug.DebugStart();
 
             try

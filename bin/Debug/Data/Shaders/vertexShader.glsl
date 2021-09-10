@@ -17,7 +17,7 @@ uniform float time;
 
 void main ()
 {
-	mat4 m = transformationMatrix * viewMatrix * projectionMatrix;
+	mat4 m = transformationMatrix;// * viewMatrix * projectionMatrix;
 	pass_textureCoords = textureCoords * vec2(textureVector.x, textureVector.y) + vec2(textureVector.z, textureVector.w);
 	vec4 pos = m * vec4(position.x, position.y, position.z, 1.0);
 	
@@ -25,11 +25,6 @@ void main ()
 	surfaceNormal = normalize(vec3(surfaceNormal4.x, surfaceNormal4.y, surfaceNormal4.z));
 	
 	toLightVector = normalize(lightPosition - vec3(pos.x, pos.y, pos.z));
-	
-	if (pos.w != 0)
-	{
-		pos = pos / pos.w;
-	}
 	
 	gl_Position = pos;
 }
