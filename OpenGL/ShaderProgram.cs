@@ -11,6 +11,11 @@ namespace WinGL
 		private int vertexShaderID;
 		private int fragmentShaderID;
 
+		public int GetProgramID()
+		{
+			return programID;
+		}
+
 		public const int MATRIX_SIZE = 16;
 
 		private static float[] matrixBuffer = new float[MATRIX_SIZE];
@@ -25,9 +30,6 @@ namespace WinGL
 			BindAttributes();
 			GL.LinkProgram(programID);
 			GL.ValidateProgram(programID);
-			Debug.Log(GetUniformLocation("viewMatrix"));
-
-			//System.out.println(fragmentFile());
 		}
 
 		public void Start()
@@ -56,10 +58,8 @@ namespace WinGL
 			else if (uniforms.ContainsKey(uniformName)) return uniforms[uniformName];
 			else
 			{
-				Debug.Log($"Active uniform : {GL.GetActiveUniformName(programID, 0)}");
 				int location = GL.GetUniformLocation(programID, uniformName);
 				uniforms.Add(uniformName, location);
-				Debug.Log($"{uniformName} location : {location}, program : {programID}");
 				return location;
 			}
 		}
@@ -103,13 +103,8 @@ namespace WinGL
 
 		protected void LoadMatrix(int location, Matrix4x4 matrix)
 		{
-			var m = new OpenTK.Matrix4(
-				matrix.column_0.x, matrix.column_1.x, matrix.column_2.x, matrix.column_3.x,
-				matrix.column_0.y, matrix.column_1.y, matrix.column_2.y, matrix.column_3.y,
-				matrix.column_0.z, matrix.column_1.z, matrix.column_2.z, matrix.column_3.z,
-				matrix.column_0.w, matrix.column_1.w, matrix.column_2.w, matrix.column_3.w
-				);
-			GL.UniformMatrix4(location, false, ref m);
+			for (int i = 0; i < 16; i++) matrixBuffer[i] = matrix[i % 4, i / 4];
+			GL.UniformMatrix4(location, 1, false, matrixBuffer);
 		}
 
 		public void SetFloat(string name, float value)

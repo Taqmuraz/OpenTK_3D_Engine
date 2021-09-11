@@ -43,7 +43,7 @@ namespace WinGL
 
 		public void LoadViewMatrix(Matrix4x4 matrix)
 		{
-			matrix.column_3 = -matrix.column_3;
+			//matrix.column_3 = -matrix.column_3;
 			SetMatrix("viewMatrix", matrix);
 		}
 		public void LoadLight(Engine.Game.Light light)

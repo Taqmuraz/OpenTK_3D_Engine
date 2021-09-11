@@ -97,6 +97,7 @@ namespace Engine.Game
 			soldier.material = new Material(Shader.LoadShader("default"));
 			soldier.material.mainTexture = Project.mainPanel.LoadTexture("./Data/Models/Soldier.png");
 			soldier.model = Project.mainPanel.LoadModel("./Data/Models/Soldier.obj");
+			soldier.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
 			//var cube = new GameObject("Cube").AddComponent<Renderer>();
 			//cube.material = soldier.material;

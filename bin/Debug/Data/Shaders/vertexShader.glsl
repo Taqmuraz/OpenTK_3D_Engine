@@ -17,11 +17,13 @@ uniform float time;
 
 void main ()
 {
-	mat4 m = transformationMatrix;// * viewMatrix * projectionMatrix;
 	pass_textureCoords = textureCoords * vec2(textureVector.x, textureVector.y) + vec2(textureVector.z, textureVector.w);
-	vec4 pos = m * vec4(position.x, position.y, position.z, 1.0);
 	
-	vec4 surfaceNormal4 = m * vec4(normal.x, normal.y, normal.z, 0.0);
+	mat4 vt = viewMatrix * transformationMatrix;
+	vec4 world = vt * vec4(position, 1.0);
+	vec4 pos = projectionMatrix * world;
+	
+	vec4 surfaceNormal4 = vt * vec4(normal.x, normal.y, normal.z, 0.0);
 	surfaceNormal = normalize(vec3(surfaceNormal4.x, surfaceNormal4.y, surfaceNormal4.z));
 	
 	toLightVector = normalize(lightPosition - vec3(pos.x, pos.y, pos.z));

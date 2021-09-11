@@ -276,25 +276,16 @@ namespace Engine
 			float x_scale = y_scale / aspect;
 			float frustum_length = far - near;
 
-			Matrix4x4 projectionMatrix = Matrix4x4.identity;
+			Matrix4x4 projectionMatrix = identity;
 
 			projectionMatrix.column_0.x = x_scale;
 			projectionMatrix.column_1.y = y_scale;
 			projectionMatrix.column_2.z = -((far + near) / frustum_length);
-			projectionMatrix.column_2.w = -1f;
-			projectionMatrix.column_3.z = -((2f * near * far) / frustum_length);
+			projectionMatrix.column_3.z = -1f;
+			projectionMatrix.column_2.w = -((2f * near * far) / frustum_length);
 			projectionMatrix.column_3.w = 0f;
 
-			return projectionMatrix;
-		}
-		public static Matrix4x4 CreateOrthoMatrix(Vector2 screenSize)
-		{
-			Vector4 row1 = new Vector4(0f, 0f, 0f, 0f);
-			Vector4 row2 = new Vector4(0f, 0f, 0f, 0f);
-			Vector4 row3 = new Vector4(0f, 0f, 0f, 0f);
-			Vector4 row4 = new Vector4(0f, 0f, 0f, 0f);
-
-			return new Matrix4x4(row1, row2, row3, row4).GetTransponed();
+			return projectionMatrix.GetTransponed();
 		}
 
 		public Vector3 MultiplyPoint(Vector3 point)

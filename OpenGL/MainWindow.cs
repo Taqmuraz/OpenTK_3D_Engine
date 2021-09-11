@@ -49,6 +49,9 @@ namespace WinGL
 			}
 
             sample = Engine.Rendering.OBJFileLoader.LoadOBJ("./Data/Models/Soldier.obj");
+
+            //vertexBufferId = GL.GenBuffer();
+            //indexBufferId = GL.GenBuffer();
         }
 
         protected override void OnResize(EventArgs e)
@@ -58,6 +61,7 @@ namespace WinGL
         }
 
         Mesh sample;
+        int vertexBufferId, indexBufferId;
 
         void DrawFrame()
 		{
@@ -66,13 +70,33 @@ namespace WinGL
 
             Loader.UpdateLoader();
 
-            GL.LoadIdentity();
-
             GL.Viewport(0, 0, Width, Height);
 
             MasterRenderer.masterRenderer.Render(null, Engine.Game.Camera.mainCamera);
 
-            GL.Begin(PrimitiveType.Triangles);
+            /*GL.UseProgram(Shader.defaultShader.GetProgramID());
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexBufferId);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indexCount * sizeof(ushort)), (IntPtr)pIndex, BufferUsageHint.StaticDraw);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferId);
+
+            GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, Vertex2D.SizeInBytes, 0);
+            GL.VertexAttribPointer(1, 4, VertexAttribPointerType.UnsignedByte, true, Vertex2D.SizeInBytes, 8);
+            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Vertex2D.SizeInBytes, 8 + 4);
+
+            GL.EnableVertexAttribArray(0);
+            GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
+
+            fixed (float* ptr = &projection.M11)
+            {
+                GL.UniformMatrix4(transformLocation, 1, false, ptr);
+            }
+            */
+
+
+            /*GL.Begin(PrimitiveType.Triangles);
             
             float s = 0.1f;
 
@@ -92,6 +116,7 @@ namespace WinGL
             }
 
             GL.End();
+            */
 
             SwapBuffers();
         }

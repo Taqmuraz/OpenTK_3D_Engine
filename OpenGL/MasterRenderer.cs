@@ -48,18 +48,21 @@ namespace WinGL
 
 		public void Render(Engine.Game.Light sun, Engine.Game.Camera camera)
 		{
-			foreach (var model in modelsToLoad)
+			lock (modelsToLoad)
 			{
-				try
+				foreach (var model in modelsToLoad)
 				{
-					LoadModelFromQueue(model);
+					try
+					{
+						LoadModelFromQueue(model);
+					}
+					catch (System.Exception ex)
+					{
+						Debug.LogError(ex.ToString());
+					}
 				}
-				catch (System.Exception ex)
-				{
-					Debug.LogError(ex.ToString());
-				}
+				modelsToLoad.Clear();
 			}
-			modelsToLoad.Clear();
 
 			if (camera == null) return;
 

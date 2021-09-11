@@ -74,31 +74,37 @@ namespace WinGL
 
 		public static void UpdateLoader()
 		{
-			foreach (var texture in texturesToLoad)
+			lock (texturesToLoad)
 			{
-				try
+				foreach (var texture in texturesToLoad)
 				{
-					ProcessTexture(texture);
+					try
+					{
+						ProcessTexture(texture);
+					}
+					catch (System.Exception ex)
+					{
+						Debug.LogError(ex);
+					}
 				}
-				catch (System.Exception ex)
-				{
-					Debug.LogError(ex);
-				}
+				texturesToLoad.Clear();
 			}
-			texturesToLoad.Clear();
 
-			foreach (var model in modelsToLoad)
+			lock (modelsToLoad)
 			{
-				try
+				foreach (var model in modelsToLoad)
 				{
-					LoadToVAO(model.mesh, model.model);
+					try
+					{
+						LoadToVAO(model.mesh, model.model);
+					}
+					catch (System.Exception ex)
+					{
+						Debug.LogError(ex);
+					}
 				}
-				catch (System.Exception ex)
-				{
-					Debug.LogError(ex);
-				}
+				modelsToLoad.Clear();
 			}
-			modelsToLoad.Clear();
 		}
 
 		static void ProcessTexture(TextureToLoad tex)
@@ -107,7 +113,6 @@ namespace WinGL
 			if (File.Exists(tex.file))
 			{
 				bmp = (Bitmap)Image.FromFile(tex.file);
-				bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 			}
 
 			int width = bmp.Width;
@@ -164,7 +169,7 @@ namespace WinGL
 		{
 			int vboID = CreateVBO();
 			GL.BindBuffer(BufferTarget.ArrayBuffer, vboID);
-			GL.BufferData( BufferTarget.ArrayBuffer, data.Length, data, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
 			GL.VertexAttribPointer(attributeNumber, coordinateSize, VertexAttribPointerType.Float, false, 0, 0);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
@@ -176,7 +181,7 @@ namespace WinGL
 		{
 			int vboID = CreateVBO();
 			GL.BindBuffer(BufferTarget.ElementArrayBuffer, vboID);
-			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length, indices, BufferUsageHint.StaticDraw);
+			GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(int), indices, BufferUsageHint.StaticDraw);
 		}
 	}
 }
