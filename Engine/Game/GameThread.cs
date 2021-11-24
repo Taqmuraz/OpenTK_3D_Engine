@@ -92,12 +92,14 @@ namespace Engine.Game
 
 			camera.gameObject.AddComponent<CameraFreeController>();
 
-			camera.transform.position = new Vector3(0f, 0f, -5f);
+			camera.transform.position = new Vector3(0f, 0f, 5f);
 			var soldier = new GameObject("Soldier").AddComponent<Renderer>();
+			soldier.gameObject.AddComponent<Soldier>();
 			soldier.material = new Material(Shader.LoadShader("default"));
 			soldier.material.mainTexture = Project.mainPanel.LoadTexture("./Data/Models/Soldier.png");
 			soldier.model = Project.mainPanel.LoadModel("./Data/Models/Soldier.obj");
 			soldier.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+			soldier.transform.position = new Vector3(0f, 0f, 0f);
 
 			//var cube = new GameObject("Cube").AddComponent<Renderer>();
 			//cube.material = soldier.material;

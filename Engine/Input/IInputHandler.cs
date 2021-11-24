@@ -8,7 +8,7 @@ namespace Engine
 		void OnKeyDown(Keys key);
 		void OnKeyUp(Keys key);
 		void OnMouseDown(PointF point, int button);
-		void OnMouseMove(PointF point);
+		void OnMouseMove(PointF point, PointF delta);
 		void OnMouseUp(PointF point, int button);
 	}
 }

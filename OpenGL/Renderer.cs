@@ -17,7 +17,7 @@ namespace WinGL
 		public void Render(SafeList<Engine.Game.Renderer> renderers, Engine.Game.Light sun)
 		{
 			Matrix4x4 proj = Engine.Game.Camera.mainCamera.projectionMatrix;
-			Matrix4x4 view = Engine.Game.Camera.mainCamera.transform.localToWorld;
+			Matrix4x4 view = Engine.Game.Camera.mainCamera.transform.localToWorld.GetInversed();
 
 			foreach (Engine.Game.Renderer renderer in renderers)
 			{

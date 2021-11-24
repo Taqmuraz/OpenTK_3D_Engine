@@ -21,6 +21,7 @@ namespace Engine
 		static readonly KeyInfo emptyKey = new EmptyKeyInfo();
 
 		public static Vector2 mousePosition { get; private set; }
+		public static Vector2 mouseDelta { get; private set; }
 
 		class EmptyKeyInfo : KeyInfo
 		{
@@ -41,6 +42,7 @@ namespace Engine
 
 		public static void UpdateInput()
 		{
+			mouseDelta = Vector2.zero;
 			lock (keys)
 			{
 				foreach (var key in keys)
@@ -118,9 +120,10 @@ namespace Engine
 			mousePosition = point;
 		}
 
-		public void OnMouseMove(PointF point)
+		public void OnMouseMove(PointF point, PointF delta)
 		{
 			mousePosition = point;
+			mouseDelta = delta;
 		}
 
 		public void OnMouseUp(PointF point, int button)

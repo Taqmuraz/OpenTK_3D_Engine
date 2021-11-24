@@ -210,7 +210,7 @@ namespace Engine
 		}
 		public static Matrix4x4 CreateRotationMatrix(Vector3 euler)
 		{
-			return CreateRotationMatrix_Z(euler.z) * CreateRotationMatrix_Y(euler.y) * CreateRotationMatrix_X(euler.x);
+			return CreateRotationMatrix_X(euler.x) * CreateRotationMatrix_Y(euler.y) * CreateRotationMatrix_Z(euler.z);
 		}
 		public static Matrix4x4 CreateTranslationMatrix(Vector3 pos)
 		{

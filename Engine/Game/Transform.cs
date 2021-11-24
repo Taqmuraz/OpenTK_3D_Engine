@@ -8,15 +8,30 @@ namespace Engine.Game
 		{
 			get
 			{
-				return new Vector3(local.column_3.x, local.column_3.y, local.column_3.z);
+				return m_localPosition;
 			}
 			set
 			{
-				local.column_3 = value;
-				UpdateMatrix(UpdateState.PositionChanged);
+				m_localPosition = value;
+				UpdateMatrix();
 			}
 		}
-		Quaternion m_localRotation = Quaternion.identity;
+		public Vector3 localEulerAngles
+		{
+			get
+			{
+				return m_localEulerAngles;
+			}
+			set
+			{
+				m_localEulerAngles = value;
+				UpdateMatrix();
+			}
+		}
+		Vector3 m_localEulerAngles = Vector3.zero;
+		Vector3 m_localPosition = Vector3.zero;
+		Vector3 m_localScale = Vector3.one;
+		/*Quaternion m_localRotation = Quaternion.identity;
 		public Quaternion localRotation
 		{
 			get
@@ -25,71 +40,46 @@ namespace Engine.Game
 			}
 			set
 			{
-				Matrix4x4 rotation = value.ToMatrix();
-				local.column_0 = rotation.column_0 * local.column_0.length;
-				local.column_1 = rotation.column_1 * local.column_1.length;
-				local.column_2 = rotation.column_2 * local.column_2.length;
 				m_localRotation = value;
-				UpdateMatrix(UpdateState.RotationChanged);
+				UpdateMatrix();
 			}
-		}
+		}*/
 		public Vector3 localScale
 		{
 			get
 			{
-				return new Vector3(local.column_0.length, local.column_1.length, local.column_2.length);
+				return m_localScale;
 			}
 			set
 			{
-				local.column_0 = local.column_0.normalized * value.x;
-				local.column_1 = local.column_1.normalized * value.y;
-				local.column_2 = local.column_2.normalized * value.z;
-				UpdateMatrix(UpdateState.ScaleChanged);
+				m_localScale = value;
+				UpdateMatrix();
 			}
 		}
-		Vector3 m_position;
+		Vector3 m_position = Vector3.zero;
+		//Quaternion m_rotation = Quaternion.identity;
 		public Vector3 position
 		{
 			get => m_position;
 			set
 			{
 				Vector3 pos = parentMatrixInv.MultiplyPoint(value);
-				local.column_3 = new Vector4(pos.x, pos.y, pos.z, 1f);
-				
-				UpdateMatrix(UpdateState.PositionChanged);
+				localPosition = pos;
 			}
 		}
-		Quaternion m_rotation;
-		public Quaternion rotation
+		/*public Quaternion rotation
 		{
 			get => m_rotation;
 			set
 			{
 				localRotation = parentMatrixInv.GetRotation() * value;
-				UpdateMatrix(UpdateState.RotationChanged);
+				UpdateMatrix();
 			}
-		}
+		}*/
 		public Vector3 right { get; private set; }
 		public Vector3 up { get; private set; }
 		public Vector3 forward { get; private set; }
 		public Vector3 scale { get; private set; }
-
-		[System.Flags]
-		enum UpdateState : byte
-		{
-			None = 0,
-			Position = 1,
-			Rotation = 2,
-			Scale = 4,
-			Right = 8,
-			Up = 16,
-			Forward = 32,
-			All = 255,
-
-			PositionChanged = Position,
-			RotationChanged = Rotation | Right | Up | Forward,
-			ScaleChanged = Scale
-		}
 
 		Transform m_parent;
 		public Transform parent
@@ -119,29 +109,37 @@ namespace Engine.Game
 
 		HashSet<Transform> childs = new HashSet<Transform>();
 
-		void UpdateMatrix(UpdateState state)
+		void UpdateMatrix()
 		{
-			UpdateMatrix(parent == null ? Matrix4x4.identity : parent.localToWorld, state);
+			UpdateMatrix(parent == null ? Matrix4x4.identity : parent.localToWorld);
 		}
 
-		void UpdateMatrix(Matrix4x4 parentToWorld, UpdateState updateState)
+		void UpdateMatrix(Matrix4x4 parentToWorld)
 		{
+			Matrix4x4 local = Matrix4x4.identity;
+			//var rotationMatrix = localRotation.ToMatrix();
+			var rotationMatrix = Matrix4x4.CreateRotationMatrix(localEulerAngles);
+			local.column_0 = rotationMatrix.column_0.normalized * m_localScale.x;
+			local.column_1 = rotationMatrix.column_1.normalized * m_localScale.y;
+			local.column_2 = rotationMatrix.column_2.normalized * m_localScale.z;
+			local.column_3 = new Vector4(m_localPosition, 1f);
+
 			Matrix4x4 localToWorld;
 			this.localToWorld = localToWorld = local * parentToWorld;
+
+			m_position = (Vector3)localToWorld.column_3;
+			//m_rotation = localToWorld.GetRotation();
+
+			Vector3 scale = new Vector3(localToWorld.column_0.length, localToWorld.column_1.length, localToWorld.column_2.length);
+			right = ((Vector3)localToWorld.column_0) / (scale.x == 0f ? 1f : scale.x);
+			up = ((Vector3)localToWorld.column_1) / (scale.y == 0f ? 1f : scale.y);
+			forward = ((Vector3)localToWorld.column_2) / (scale.z == 0f ? 1f : scale.z);
+			this.scale = scale;
 
 			parentMatrix = parentToWorld;
 			parentMatrixInv = parentMatrix.GetInversed();
 
-			if (updateState.HasFlag(UpdateState.Rotation)) m_rotation = localToWorld.GetRotation();
-			if (updateState.HasFlag(UpdateState.Position)) m_position = (Vector3)localToWorld.column_3;
-
-			if (updateState.HasFlag(UpdateState.Right)) right = (Vector3)localToWorld.column_0;
-			if (updateState.HasFlag(UpdateState.Up)) up = (Vector3)localToWorld.column_1;
-			if (updateState.HasFlag(UpdateState.Forward)) forward = (Vector3)localToWorld.column_2;
-
-			if (updateState.HasFlag(UpdateState.Scale)) scale = new Vector3(localToWorld.column_0.length, localToWorld.column_1.length, localToWorld.column_2.length);
-
-			foreach (var child in childs) child.UpdateMatrix(localToWorld, UpdateState.All);
+			foreach (var child in childs) child.UpdateMatrix(localToWorld);
 		}
 
 		[BehaviourEvent]
@@ -150,8 +148,6 @@ namespace Engine.Game
 			parent = null;
 			foreach (var child in childs) child.gameObject.Destroy();
 		}
-
-		Matrix4x4 local = Matrix4x4.identity;
 		public Matrix4x4 localToWorld { get; private set; } = Matrix4x4.identity;
 	}
 }

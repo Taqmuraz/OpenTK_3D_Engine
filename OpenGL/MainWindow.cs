@@ -66,7 +66,7 @@ namespace WinGL
         void DrawFrame()
 		{
             var camera = Engine.Game.Camera.mainCamera;
-            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}, Camera rotation : {camera.transform.rotation}";
+            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}, Camera euler : {camera.transform.localEulerAngles}";
 
             Loader.UpdateLoader();
 
@@ -189,7 +189,7 @@ namespace WinGL
         }
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
-            foreach (var handler in inputHandlers) handler.OnMouseMove(e.Position);
+            foreach (var handler in inputHandlers) handler.OnMouseMove(e.Position, new System.Drawing.PointF(e.XDelta, e.YDelta));
         }
 
 		void IMainPanel.RemoveInputHandler(IInputHandler handler)
