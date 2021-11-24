@@ -11,7 +11,6 @@ using System.Linq;
 
 namespace WinGL
 {
-
 	class MainWindow : GameWindow, IMainPanel
     {
         public static float WindowWidth { get; private set; }
@@ -47,11 +46,6 @@ namespace WinGL
 			{
                 Debug.LogError(ex.ToString());
 			}
-
-            sample = Engine.Rendering.OBJFileLoader.LoadOBJ("./Data/Models/Soldier.obj");
-
-            //vertexBufferId = GL.GenBuffer();
-            //indexBufferId = GL.GenBuffer();
         }
 
         protected override void OnResize(EventArgs e)
@@ -60,13 +54,10 @@ namespace WinGL
             WindowHeight = Height;
         }
 
-        Mesh sample;
-        int vertexBufferId, indexBufferId;
-
         void DrawFrame()
 		{
             var camera = Engine.Game.Camera.mainCamera;
-            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}, Camera euler : {camera.transform.localEulerAngles}";
+            Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}, Camera rotation : {camera.transform.rotation}";
 
             Loader.UpdateLoader();
 

@@ -20,24 +20,21 @@
 
 		public Matrix4x4 ToMatrix()
 		{
-			Vector4 c0 = new Vector4();
-			Vector4 c1 = new Vector4();
-			Vector4 c2 = new Vector4();
-			Vector4 c3 = new Vector4(0f, 0f, 0f, 1f);
-
-			c0.x = 1f - 2f * y * y - 2f * z * z;
-			c0.y = 2f * x * y + 2f * z * w;
-			c0.z = 2f * x * z - 2f * y * w;
-
-			c1.x = 2f * x * y - 2f * z * w;
-			c1.y = 1f - 2 * x * x - 2f * z * z;
-			c1.z = 2f * y * z - 2f * x * w;
-
-			c2.x = 2f * x * z + 2f * y * w;
-			c2.y = 2f * y * z - 2f * z * w;
-			c2.z = 1f - 2f * x * x - 2f * y * y;
-
-			return new Matrix4x4(c0, c1, c2, c3);
+			Matrix4x4 a = new Matrix4x4
+				(
+					w, z, -y, x,
+					-z, w, x, y,
+					y, -x, w, z,
+					-x, -y, -z, w
+				);
+			Matrix4x4 b = new Matrix4x4
+				(
+					w, z, -y, -x,
+					-z, w, x, -y,
+					y, -x, w, -z,
+					x, y, z, w
+				);
+			return a * b;
 		}
 
 		public static Quaternion operator * (Quaternion a, Quaternion b)
@@ -50,8 +47,29 @@
 			return new Quaternion(x, y, z, w);
 		}
 
+		public static Quaternion AxisAngle(Vector3 axis, float angle)
+		{
+			axis = axis.normalized;
+			Quaternion q = new Quaternion();
+			float sin = Mathf.Sin(angle * 0.5f);
+			q.x = axis.x * sin;
+			q.y = axis.y * sin;
+			q.z = axis.z * sin;
+			q.w = Mathf.Cos(angle * 0.5f);
+			return q;
+		}
+
+		public static Quaternion Euler(Vector3 euler)
+		{
+			return AxisAngle(Vector3.right, euler.x) * AxisAngle(Vector3.up, euler.y) * AxisAngle(Vector3.forward, euler.z);
+		}
+
 		public static Quaternion Euler(float x, float y, float z)
 		{
+			x *= 0.5f;
+			y *= 0.5f;
+			z *= 0.5f;
+
 			float c1 = y.Cos();
 			float c2 = z.Cos();
 			float c3 = x.Cos();

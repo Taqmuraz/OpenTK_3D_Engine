@@ -16,7 +16,7 @@ namespace Engine.Game
 				UpdateMatrix();
 			}
 		}
-		public Vector3 localEulerAngles
+		/*public Vector3 localEulerAngles
 		{
 			get
 			{
@@ -27,11 +27,10 @@ namespace Engine.Game
 				m_localEulerAngles = value;
 				UpdateMatrix();
 			}
-		}
-		Vector3 m_localEulerAngles = Vector3.zero;
+		}*/
 		Vector3 m_localPosition = Vector3.zero;
 		Vector3 m_localScale = Vector3.one;
-		/*Quaternion m_localRotation = Quaternion.identity;
+		Quaternion m_localRotation = Quaternion.identity;
 		public Quaternion localRotation
 		{
 			get
@@ -43,7 +42,7 @@ namespace Engine.Game
 				m_localRotation = value;
 				UpdateMatrix();
 			}
-		}*/
+		}
 		public Vector3 localScale
 		{
 			get
@@ -57,7 +56,7 @@ namespace Engine.Game
 			}
 		}
 		Vector3 m_position = Vector3.zero;
-		//Quaternion m_rotation = Quaternion.identity;
+		Quaternion m_rotation = Quaternion.identity;
 		public Vector3 position
 		{
 			get => m_position;
@@ -67,7 +66,7 @@ namespace Engine.Game
 				localPosition = pos;
 			}
 		}
-		/*public Quaternion rotation
+		public Quaternion rotation
 		{
 			get => m_rotation;
 			set
@@ -75,7 +74,7 @@ namespace Engine.Game
 				localRotation = parentMatrixInv.GetRotation() * value;
 				UpdateMatrix();
 			}
-		}*/
+		}
 		public Vector3 right { get; private set; }
 		public Vector3 up { get; private set; }
 		public Vector3 forward { get; private set; }
@@ -117,8 +116,7 @@ namespace Engine.Game
 		void UpdateMatrix(Matrix4x4 parentToWorld)
 		{
 			Matrix4x4 local = Matrix4x4.identity;
-			//var rotationMatrix = localRotation.ToMatrix();
-			var rotationMatrix = Matrix4x4.CreateRotationMatrix(localEulerAngles);
+			var rotationMatrix = localRotation.ToMatrix();
 			local.column_0 = rotationMatrix.column_0.normalized * m_localScale.x;
 			local.column_1 = rotationMatrix.column_1.normalized * m_localScale.y;
 			local.column_2 = rotationMatrix.column_2.normalized * m_localScale.z;
@@ -128,7 +126,7 @@ namespace Engine.Game
 			this.localToWorld = localToWorld = local * parentToWorld;
 
 			m_position = (Vector3)localToWorld.column_3;
-			//m_rotation = localToWorld.GetRotation();
+			m_rotation = localToWorld.GetRotation();
 
 			Vector3 scale = new Vector3(localToWorld.column_0.length, localToWorld.column_1.length, localToWorld.column_2.length);
 			right = ((Vector3)localToWorld.column_0) / (scale.x == 0f ? 1f : scale.x);

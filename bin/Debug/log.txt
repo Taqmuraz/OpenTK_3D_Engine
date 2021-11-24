@@ -1,0 +1,6 @@
+System.ArgumentOutOfRangeException: Индекс за пределами диапазона. Индекс должен быть положительным числом, а его размер не должен превышать размер коллекции.
+Имя параметра: index
+   в System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   в System.Collections.Generic.List`1.get_Item(Int32 index)
+   в Engine.Rendering.OBJFileLoader.ProcessVertex(String[] vertex, List`1 vertices, List`1 indices) в E:\VisualStudioProjects\3DGameEngine\WinGL3D\Engine\Rendering\OBJFileLoader.cs:строка 137
+   в Engine.Rendering.OBJFileLoader.LoadOBJ(String objFileName) в E:\VisualStudioProjects\3DGameEngine\WinGL3D\Engine\Rendering\OBJFileLoader.cs:строка 107

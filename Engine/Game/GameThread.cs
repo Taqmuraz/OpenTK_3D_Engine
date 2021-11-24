@@ -92,20 +92,26 @@ namespace Engine.Game
 
 			camera.gameObject.AddComponent<CameraFreeController>();
 
-			camera.transform.position = new Vector3(0f, 0f, 5f);
+			camera.transform.position = new Vector3(0f, 1f, 5f);
 			var soldier = new GameObject("Soldier").AddComponent<Renderer>();
 			soldier.gameObject.AddComponent<Soldier>();
 			soldier.material = new Material(Shader.LoadShader("default"));
 			soldier.material.mainTexture = Project.mainPanel.LoadTexture("./Data/Models/Soldier.png");
 			soldier.model = Project.mainPanel.LoadModel("./Data/Models/Soldier.obj");
 			soldier.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-			soldier.transform.position = new Vector3(0f, 0f, 0f);
+			soldier.transform.position = new Vector3(0f, 1f, 0f);
+
+			var flyStation = new GameObject("Station").AddComponent<Renderer>();
+			flyStation.material = new Material(Shader.LoadShader("default"));
+			flyStation.material.mainTexture = Project.mainPanel.LoadTexture("./Data/Models/Grass.png");
+			flyStation.model = Project.mainPanel.LoadModel("./Data/Models/CollisionMap.obj");
+			flyStation.material.tiling = new Vector2(10f, 10f);
 
 			//var cube = new GameObject("Cube").AddComponent<Renderer>();
 			//cube.material = soldier.material;
 			//cube.model = Project.mainPanel.LoadModel("./Data/Models/FlyStation.obj");
 			//cube.gameObject.AddComponent<RendererDisableController>();
-			
+
 			while (isPlaying)
 			{
 				lock (updateLock)

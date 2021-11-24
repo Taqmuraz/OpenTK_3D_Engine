@@ -14,7 +14,7 @@
 
 			rotate *= Time.deltaTime * 360f;
 
-			transform.localEulerAngles += rotate;
+			transform.localRotation *= Quaternion.Euler(rotate);
 		}
 	}
 	public class RendererDisableController : Component
@@ -27,12 +27,14 @@
 	}
 	public class CameraFreeController : Component
 	{
+		Vector3 euler;
+
 		[BehaviourEvent]
 		void Update()
 		{
 			Vector3 input = new Vector3();
 			Vector2 mouse = Input.mouseDelta;
-			Vector3 rotate = new Vector3(-mouse.y, -mouse.x, 0f);
+			Vector3 rotate = new Vector3(mouse.y, mouse.x, 0f);
 			float zoom = 0f;
 			if (Input.GetKey(KeyCode.W)) input.z += 1f;
 			if (Input.GetKey(KeyCode.S)) input.z -= 1f;
@@ -46,7 +48,10 @@
 
 			rotate *= Time.deltaTime * 15f;
 
-			transform.localEulerAngles += rotate;
+			euler += rotate;
+			euler.x = Mathf.Clamp(euler.x, -70f, 70f);
+
+			transform.localRotation = Quaternion.Euler(euler);
 
 			transform.position += transform.localToWorld.MultiplyVector(input) * Time.deltaTime * 5;
 

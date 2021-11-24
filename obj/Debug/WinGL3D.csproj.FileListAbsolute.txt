@@ -2,12 +2,12 @@ E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.csproj.AssemblyRe
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.Properties.Resources.resources
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.csproj.GenerateResource.cache
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.csproj.CoreCompileInputs.cache
-E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\WinGL3D.exe.config
-E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\WinGL3D.exe
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\WinGL3D.pdb
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\OpenTK.dll
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\OpenTK.pdb
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\OpenTK.xml
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.csproj.CopyComplete
-E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.exe
 E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.pdb
+E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\WinGL3D.exe.config
+E:\VisualStudioProjects\3DGameEngine\WinGL3D\bin\Debug\WinGL3D.exe
+E:\VisualStudioProjects\3DGameEngine\WinGL3D\obj\Debug\WinGL3D.exe
