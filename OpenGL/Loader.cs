@@ -67,7 +67,10 @@ namespace WinGL
 			{
 				var texture = new Engine.Rendering.Texture(0, 1, 1);
 				textures.Add(fileName, texture);
-				texturesToLoad.Add(new TextureToLoad(fileName, texture));
+				lock (texturesToLoad)
+				{
+					texturesToLoad.Add(new TextureToLoad(fileName, texture));
+				}
 				return texture;
 			}
 		}

@@ -10,6 +10,7 @@ namespace Engine.Game
 		}
 		public Shader shader { get; private set; }
 		public Texture mainTexture { get; set; }
+		public Color32 color { get; set; } = Color32.white;
 		public bool cullFaces { get; private set; } = true;
 
 		public Vector2 tiling { get; set; } = Vector2.one;

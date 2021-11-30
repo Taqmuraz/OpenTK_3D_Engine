@@ -23,7 +23,10 @@ namespace WinGL
 				return new Engine.Rendering.Model(modelIndices[fileName]);
 			}
 
-			modelsToLoad.Add(fileName);
+			lock (modelsToLoad)
+			{
+				modelsToLoad.Add(fileName);
+			}
 			int index = models.Count + modelsToLoad.Count - 1;
 			modelIndices.Add(fileName, index);
 

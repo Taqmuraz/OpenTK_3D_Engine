@@ -16,7 +16,7 @@ namespace Engine.Game
 				UpdateMatrix();
 			}
 		}
-		/*public Vector3 localEulerAngles
+		public Vector3 localEulerAngles
 		{
 			get
 			{
@@ -27,7 +27,8 @@ namespace Engine.Game
 				m_localEulerAngles = value;
 				UpdateMatrix();
 			}
-		}*/
+		}
+		Vector3 m_localEulerAngles = Vector3.zero;
 		Vector3 m_localPosition = Vector3.zero;
 		Vector3 m_localScale = Vector3.one;
 		Quaternion m_localRotation = Quaternion.identity;
@@ -56,7 +57,6 @@ namespace Engine.Game
 			}
 		}
 		Vector3 m_position = Vector3.zero;
-		Quaternion m_rotation = Quaternion.identity;
 		public Vector3 position
 		{
 			get => m_position;
@@ -66,6 +66,7 @@ namespace Engine.Game
 				localPosition = pos;
 			}
 		}
+		Quaternion m_rotation = Quaternion.identity;
 		public Quaternion rotation
 		{
 			get => m_rotation;
@@ -116,7 +117,7 @@ namespace Engine.Game
 		void UpdateMatrix(Matrix4x4 parentToWorld)
 		{
 			Matrix4x4 local = Matrix4x4.identity;
-			var rotationMatrix = localRotation.ToMatrix();
+			var rotationMatrix = Matrix4x4.CreateRotationMatrix(localEulerAngles);
 			local.column_0 = rotationMatrix.column_0.normalized * m_localScale.x;
 			local.column_1 = rotationMatrix.column_1.normalized * m_localScale.y;
 			local.column_2 = rotationMatrix.column_2.normalized * m_localScale.z;

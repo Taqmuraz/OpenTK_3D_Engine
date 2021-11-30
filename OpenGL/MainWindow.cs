@@ -57,6 +57,9 @@ namespace WinGL
         void DrawFrame()
 		{
             var camera = Engine.Game.Camera.mainCamera;
+
+            if (camera == null) return;
+
             Title = $"Field of view : {camera.fieldOfView}, Camera position : {camera.transform.position}, Camera rotation : {camera.transform.rotation}";
 
             Loader.UpdateLoader();

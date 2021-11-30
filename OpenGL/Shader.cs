@@ -56,7 +56,9 @@ namespace WinGL
 		{
 			Vector2 tiling = material.tiling;
 			Vector2 offset = material.offset;
+			Color32 color = material.color;
 			SetVector4("textureVector", new Vector4(tiling.x, tiling.y, offset.x, offset.y));
+			SetVector4("textureColor", new Vector4(color.r, color.g, color.b, color.a));
 		}
 	}
 }

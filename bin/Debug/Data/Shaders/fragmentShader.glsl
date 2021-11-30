@@ -10,15 +10,16 @@ uniform sampler2D textureSampler;
 uniform vec3 lightColor;
 uniform float ambienceIntencivity;
 uniform float time;
+uniform vec4 textureColor;
 
 void main (void)
 {
-	vec4 textureColor = texture(textureSampler, pass_textureCoords);
+	vec4 clr= texture(textureSampler, pass_textureCoords);
 	
 	float nDotl = dot (surfaceNormal, toLightVector);
 	float brightness = max(nDotl, ambienceIntencivity);
 	
-	out_Color = textureColor;
+	out_Color = clr * textureColor;
 }
 
 

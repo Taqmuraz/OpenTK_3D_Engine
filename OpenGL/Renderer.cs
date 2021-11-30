@@ -19,6 +19,10 @@ namespace WinGL
 			Matrix4x4 proj = Engine.Game.Camera.mainCamera.projectionMatrix;
 			Matrix4x4 view = Engine.Game.Camera.mainCamera.transform.localToWorld.GetInversed();
 
+			proj.column_2 = -proj.column_2;
+
+			GL.FrontFace(FrontFaceDirection.Cw);
+
 			foreach (Engine.Game.Renderer renderer in renderers)
 			{
 				if (MasterRenderer.models.Count <= renderer.model.modelIndex) continue;

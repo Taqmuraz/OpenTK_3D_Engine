@@ -92,14 +92,30 @@ namespace Engine.Game
 
 			camera.gameObject.AddComponent<CameraFreeController>();
 
+			var model = Project.mainPanel.LoadModel("./Data/Models/Soldier.obj");
+			var texture = Project.mainPanel.LoadTexture("./Data/Models/Soldier.png");
+			var shader = Shader.LoadShader("default");
+
+			Vector3[] rotations = new Vector3[3];
+			rotations[0] = new Vector3(0f, 0f, -90f);
+			rotations[1] = Vector3.zero;
+			rotations[2] = new Vector3(90f, 0f, 0f);
+
 			camera.transform.position = new Vector3(0f, 1f, 5f);
-			var soldier = new GameObject("Soldier").AddComponent<Renderer>();
-			soldier.gameObject.AddComponent<Soldier>();
-			soldier.material = new Material(Shader.LoadShader("default"));
-			soldier.material.mainTexture = Project.mainPanel.LoadTexture("./Data/Models/Soldier.png");
-			soldier.model = Project.mainPanel.LoadModel("./Data/Models/Soldier.obj");
-			soldier.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-			soldier.transform.position = new Vector3(0f, 1f, 0f);
+			for (int i = 0; i < 3; i++)
+			{
+				var soldier = new GameObject("Soldier_" + i.ToString()).AddComponent<Renderer>();
+				soldier.gameObject.AddComponent<Soldier>();
+				soldier.material = new Material(shader);
+				soldier.material.mainTexture = texture;
+				soldier.model = model;
+				soldier.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+				Vector3 pos = new Vector3();
+				pos[i] = 1f;
+				soldier.transform.localEulerAngles = rotations[i];
+				soldier.transform.position = pos;
+				soldier.material.color = new Color32(pos.x, pos.y, pos.z, 1f);
+			}
 
 			var flyStation = new GameObject("Station").AddComponent<Renderer>();
 			flyStation.material = new Material(Shader.LoadShader("default"));

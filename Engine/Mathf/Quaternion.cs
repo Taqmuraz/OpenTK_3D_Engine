@@ -34,7 +34,7 @@
 					y, -x, w, -z,
 					x, y, z, w
 				);
-			return a * b;
+			return b * a;
 		}
 
 		public static Quaternion operator * (Quaternion a, Quaternion b)
